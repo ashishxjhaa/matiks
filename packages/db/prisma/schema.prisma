@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum FriendsStatus {
+  ACCEPTED
+  REJECTED
+  PENDING
+}
+
+enum QuestionOperation {
+  PLUS
+  MINUS
+  DIVIDE
+  MULTIPLICATION
+}
+
+enum GameMemberStatus {
+  WON
+  LOST
+}
+
+enum GameStatus {
+  RUNNING
+  SEARCHING_FOR_PLAYER
+  OVER
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  username String @unique
+
+  rating     UserRating?
+  gameMember GameMember[]
+
+  sender          Friends[]        @relation("sender")
+  receiver        Friends[]        @relation("receiver")
+  questionAnswers QuestionAnswer[]
+}
+
+model Game {
+  id         String           @id @default(cuid())
+  timeLimit  Int
+  startedAt  DateTime
+  endsAt     DateTime
+  status     GameStatus
+  gameMember GameMember[]
+  questions  Question[]
+  answers    QuestionAnswer[]
+}
+
+model Question {
+  id     String @id @default(cuid())
+  gameId String
+  game   Game   @relation(references: [id], fields: [gameId])
+
+  userAnswer Int
+  number1    Int
+  number2    Int
+  operation  QuestionOperation
+
+  answers QuestionAnswer[]
+}
+
+model QuestionAnswer {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(references: [id], fields: [questionId])
+
+  answer Int
+  gameId String
+  game   Game   @relation(references: [id], fields: [gameId])
+
+  userId String
+  user   User   @relation(references: [id], fields: [userId])
+}
+
+model GameMember {
+  id     String @id @default(cuid())
+  gameId String
+  game   Game   @relation(references: [id], fields: [gameId])
+
+  userId String
+  user   User   @relation(references: [id], fields: [userId])
+}
+
+model UserRating {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  rating Int
+
+  user User @relation(references: [id], fields: [userId])
+}
+
+model Friends {
+  id String @id @default(cuid())
+
+  status FriendsStatus @default(PENDING)
+
+  receiverId String
+  receiver   User   @relation(references: [id], fields: [receiverId], "receiver")
+
+  senderId String
+  sender   User   @relation(references: [id], fields: [senderId], "sender")
+}
