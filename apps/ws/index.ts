@@ -11,6 +11,14 @@ const games: Map<string, Game> = new Map();
 const currentQuestions: Map<string, number> = new Map();
 const allQuestions: Map<string, Question[]> = new Map();
 
+function progressKey(gameId: string, userId: string) {
+  return `g:${gameId}-u:${userId}`;
+}
+
+function answersMatch(submitted: number, expected: number) {
+  return Math.abs(Number(submitted) - Number(expected)) < 1e-6;
+}
+
 type ExtendedWs = WebSocket & { userId: string };
 
 wss.on("connection", async (ws: ExtendedWs, req) => {
@@ -111,9 +119,11 @@ wss.on("connection", async (ws: ExtendedWs, req) => {
         ws,
       });
 
-      currentGameFetched.questions = generateQuestions();
+      const questions = generateQuestions();
 
-      allQuestions.set(runningGame.id, currentGameFetched.questions);
+      currentGameFetched.questions = questions;
+
+      allQuestions.set(runningGame.id, questions);
 
       currentGameFetched.status = "RUNNING";
 
@@ -121,11 +131,8 @@ wss.on("connection", async (ws: ExtendedWs, req) => {
 
       const firstQuestion = currentGameFetched.questions[0]!;
 
-      const key = `g:${currentGameFetched.id}-u${user.id}-q${firstQuestion.id}`;
-
-      currentQuestions.set(key, 0);
-
-      currentGameFetched.members.forEach((mem) =>
+      currentGameFetched.members.forEach((mem) => {
+        currentQuestions.set(progressKey(currentGameFetched.id, mem.id), 0);
         mem.ws.send(
           JSON.stringify({
             type: "QUESTION",
@@ -134,8 +141,8 @@ wss.on("connection", async (ws: ExtendedWs, req) => {
               question: firstQuestion,
             },
           }),
-        ),
-      );
+        );
+      });
     }
 
     if (parsedData.type === "SUBMIT_ANSWER") {
@@ -157,26 +164,28 @@ wss.on("connection", async (ws: ExtendedWs, req) => {
         return;
       }
 
-      const filteredAnswers = existingGame.answers.filter((exGm) => {
-        exGm.questionId !== questionId;
-      });
-
-      filteredAnswers.push({
+      existingGame.answers.push({
         id: crypto.randomUUID(),
         answer,
         questionId,
       });
 
-      if (answer !== existingQuestion.answer) {
+      if (!answersMatch(answer, existingQuestion.answer)) {
         return;
       }
 
-      const key = `g:${existingGame.id}-u${user.id}-${existingQuestion.id}`;
-      const currentQuestionIndex = currentQuestions.get(key)!;
-      const storedQuestions = allQuestions.get(existingGame.id)!;
+      const key = progressKey(existingGame.id, ws.userId);
+      const currentQuestionIndex = currentQuestions.get(key) ?? 0;
+      const storedQuestions =
+        allQuestions.get(existingGame.id) ?? existingGame.questions;
 
-      const nextQuestion = storedQuestions[currentQuestionIndex + 1];
-      currentQuestions.set(key, currentQuestionIndex + 1);
+      const nextIndex = currentQuestionIndex + 1;
+      const nextQuestion = storedQuestions[nextIndex];
+      if (!nextQuestion) {
+        return;
+      }
+
+      currentQuestions.set(key, nextIndex);
 
       ws.send(
         JSON.stringify({
