@@ -93,7 +93,7 @@ Built as a full-stack realtime product: JWT auth, live presence, matchmaking, pe
 <p align="center"><em>Dashboard: arena, daily challenges, duel tiles, and who's online</em></p>
 
 <p align="center">
-  <img src="docs/images/03-duel.jpg" alt="Duel: live question, scores, and keypad" width="100%" />
+  <img src="docs/images/03-duel.png" alt="Duel: live question, scores, and keypad" width="100%" />
 </p>
 <p align="center"><em>Duel: HUD, live scores, 60s clock, question chip, and keypad</em></p>
 
