@@ -26,7 +26,10 @@ async function request<T>(
   headers.set("Content-Type", "application/json");
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const res = await fetch(path, { ...options, headers });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${path}`, {
+    ...options,
+    headers,
+  });
   const body = (await res.json().catch(() => ({}))) as ApiError & T;
 
   if (!res.ok) {
