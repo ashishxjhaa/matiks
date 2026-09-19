@@ -11,11 +11,16 @@ import {
   type ReactNode,
 } from "react";
 import { useAuth } from "./auth-context";
-import type { OnlineUser, Question, WsServerMessage } from "./types";
+import type {
+  GamePlayerResult,
+  OnlineUser,
+  Question,
+  WsServerMessage,
+} from "./types";
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8080";
 
-type MatchStatus = "idle" | "searching" | "incoming" | "playing";
+type MatchStatus = "idle" | "searching" | "incoming" | "playing" | "finished";
 
 type GameState = {
   gameId: string | null;
@@ -29,6 +34,7 @@ type WsContextValue = {
   matchStatus: MatchStatus;
   game: GameState;
   opponentName: string | null;
+  result: GamePlayerResult[] | null;
   findMatch: () => void;
   joinMatch: () => void;
   submitAnswer: (answer: number) => void;
@@ -50,6 +56,7 @@ export function WsProvider({ children }: { children: ReactNode }) {
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
   const [matchStatus, setMatchStatus] = useState<MatchStatus>("idle");
   const [game, setGame] = useState<GameState>(emptyGame);
+  const [result, setResult] = useState<GamePlayerResult[] | null>(null);
   const matchStatusRef = useRef<MatchStatus>("idle");
 
   useEffect(() => {
@@ -110,12 +117,19 @@ export function WsProvider({ children }: { children: ReactNode }) {
         if (!question) return;
 
         setMatchStatus("playing");
+        setResult(null);
         setGame((prev) => ({
           gameId,
           question,
           questionNumber:
             prev.gameId === gameId ? prev.questionNumber + 1 : 1,
         }));
+        return;
+      }
+
+      if (msg.type === "GAME_OVER") {
+        setMatchStatus("finished");
+        setResult(msg.payload.players ?? []);
       }
     };
 
@@ -132,6 +146,7 @@ export function WsProvider({ children }: { children: ReactNode }) {
       setOnlineUsers([]);
       setMatchStatus("idle");
       setGame(emptyGame);
+      setResult(null);
     }, 0);
     return () => window.clearTimeout(id);
   }, [token]);
@@ -144,11 +159,15 @@ export function WsProvider({ children }: { children: ReactNode }) {
 
   const findMatch = useCallback(() => {
     setMatchStatus("searching");
+    setGame(emptyGame);
+    setResult(null);
     send("PLAY_GAME", {});
   }, [send]);
 
   const joinMatch = useCallback(() => {
     setMatchStatus("searching");
+    setGame(emptyGame);
+    setResult(null);
     send("PLAY_GAME", {});
   }, [send]);
 
@@ -167,6 +186,7 @@ export function WsProvider({ children }: { children: ReactNode }) {
   const resetMatchUi = useCallback(() => {
     setMatchStatus("idle");
     setGame(emptyGame);
+    setResult(null);
   }, []);
 
   const opponentName = useMemo(() => {
@@ -183,6 +203,7 @@ export function WsProvider({ children }: { children: ReactNode }) {
         matchStatus,
         game,
         opponentName,
+        result,
         findMatch,
         joinMatch,
         submitAnswer,

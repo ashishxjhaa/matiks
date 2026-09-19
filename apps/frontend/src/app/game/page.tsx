@@ -6,7 +6,11 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { PageLoader, Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/lib/auth-context";
 import { useWs } from "@/lib/ws-context";
-import { operationGlyph, type Question } from "@/lib/types";
+import {
+  operationGlyph,
+  type GamePlayerResult,
+  type Question,
+} from "@/lib/types";
 
 function initials(name: string) {
   return name.slice(0, 2).toUpperCase();
@@ -288,7 +292,7 @@ function ActiveGame({
   onLeave: () => void;
 }) {
   const [myScore, setMyScore] = useState(0);
-  const [secondsLeft, setSecondsLeft] = useState(59);
+  const [secondsLeft, setSecondsLeft] = useState(60);
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -313,6 +317,168 @@ function ActiveGame({
   );
 }
 
+function FlameMark() {
+  return (
+    <svg width="56" height="62" viewBox="0 0 56 62" fill="none" aria-hidden>
+      <path
+        d="M28 2c4 10 2 16-3 22 8 0 14 6 14 16 0 12-10 20-19 20S2 52 2 40c0-10 6-16 12-20-1 6 2 11 6 13C16 18 22 10 28 2Z"
+        fill="#FF8A1A"
+      />
+      <path
+        d="M28 14c3 7 1 12-2 16 6 0 10 4 10 12 0 9-7 14-13 14s-11-5-11-14c0-7 4-11 8-14 0 5 2 8 5 9 0-10 3-16 8-23Z"
+        fill="#FFE14A"
+      />
+    </svg>
+  );
+}
+
+function ResultModal({
+  me,
+  opponent,
+  onBack,
+  onRematch,
+  onNewSprint,
+}: {
+  me: GamePlayerResult;
+  opponent: GamePlayerResult | null;
+  onBack: () => void;
+  onRematch: () => void;
+  onNewSprint: () => void;
+}) {
+  const oppScore = opponent?.score ?? 0;
+  const outcome =
+    me.score > oppScore ? "win" : me.score < oppScore ? "lose" : "draw";
+  const title =
+    outcome === "win" ? "YOU WIN" : outcome === "lose" ? "YOU LOSE" : "DRAW";
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[#111] px-4">
+      <div className="relative w-full max-w-[420px]">
+        <div className="absolute -top-10 left-1/2 z-20 -translate-x-1/2">
+          <FlameMark />
+        </div>
+
+        <div className="relative overflow-hidden rounded-[22px] border border-white/[0.07] bg-[#161616] px-5 pt-8 pb-5">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-40"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(177,250,99,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(177,250,99,0.07) 1px, transparent 1px)",
+              backgroundSize: "42px 42px",
+              maskImage:
+                "radial-gradient(ellipse 70% 55% at 50% 42%, black 20%, transparent 70%)",
+            }}
+          />
+
+          <button
+            type="button"
+            onClick={onBack}
+            className="absolute top-4 left-4 z-10 flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-[#1c1c1c] text-white"
+            aria-label="Back"
+          >
+            ‹
+          </button>
+
+          <div className="relative z-10 flex flex-col items-center pt-2">
+            <span className="mb-2 h-1 w-8 rounded-full bg-accent" />
+            <div className="relative">
+              <h1
+                className="font-display text-[42px] leading-none font-extrabold tracking-[0.04em]"
+                style={{
+                  color: "transparent",
+                  WebkitTextStroke: "1.8px #B1FA63",
+                }}
+              >
+                {title}
+              </h1>
+              <span className="absolute top-[18px] left-1/2 -translate-x-1/2 rounded-full bg-accent px-2 py-[2px] text-[8px] font-extrabold tracking-[0.12em] text-black uppercase">
+                Sprint Duel
+              </span>
+            </div>
+
+            <div className="mt-10 flex w-full items-start justify-center gap-10">
+              <div className="flex min-w-[110px] flex-col items-center">
+                <p
+                  className={`tabular text-[52px] leading-none font-extrabold ${
+                    outcome === "lose" ? "text-[#6a6a6a]" : "text-accent"
+                  }`}
+                >
+                  {me.score}
+                </p>
+                <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#1c1c1c] px-2.5 py-1.5">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#2d2d2d] text-[8px] font-bold">
+                    {initials(me.name)}
+                  </span>
+                  <div>
+                    <p className="max-w-[88px] truncate text-[11px] font-semibold">
+                      {me.name}
+                    </p>
+                    <p className="tabular text-[10px] text-[#8a8a8a]">
+                      {me.rating}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <span className="mt-6 text-[#4a4a4a]">–</span>
+
+              <div className="flex min-w-[110px] flex-col items-center">
+                <p
+                  className={`tabular text-[52px] leading-none font-extrabold ${
+                    outcome === "win" ? "text-[#6a6a6a]" : "text-accent"
+                  }`}
+                >
+                  {oppScore}
+                </p>
+                <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#1c1c1c] px-2.5 py-1.5">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#2d2d2d] text-[8px] font-bold">
+                    {initials(opponent?.name ?? "OP")}
+                  </span>
+                  <div>
+                    <p className="max-w-[88px] truncate text-[11px] font-semibold">
+                      {opponent?.name ?? "Opponent"}
+                    </p>
+                    <p className="tabular text-[10px] text-[#8a8a8a]">
+                      {opponent?.rating ?? 0}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="mt-8 inline-flex items-center gap-1.5 rounded-full bg-[#2a2a2a] px-3 py-1.5 text-[11px] text-[#9a9a9a]"
+            >
+              <span aria-hidden>☺</span>
+              Send a Reaction
+            </button>
+
+            <div className="mt-5 grid w-full grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={onRematch}
+                className="h-11 rounded-full border-[1.5px] border-accent text-[12px] font-extrabold tracking-[0.08em] text-accent uppercase"
+              >
+                Rematch
+              </button>
+              <button
+                type="button"
+                onClick={onNewSprint}
+                className="inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-accent text-[12px] font-extrabold tracking-[0.06em] text-black uppercase"
+              >
+                <span aria-hidden>▶</span>
+                New Math Sprint
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -322,6 +488,8 @@ export default function GamePage() {
     submitAnswer,
     resetMatchUi,
     opponentName,
+    result,
+    findMatch,
   } = useWs();
 
   useEffect(() => {
@@ -329,10 +497,16 @@ export default function GamePage() {
   }, [loading, user, router]);
 
   useEffect(() => {
-    if (!loading && user && matchStatus === "idle" && !game.question) {
+    if (
+      !loading &&
+      user &&
+      matchStatus === "idle" &&
+      !game.question &&
+      !result
+    ) {
       router.replace("/dashboard");
     }
-  }, [loading, user, matchStatus, game.question, router]);
+  }, [loading, user, matchStatus, game.question, result, router]);
 
   function leave() {
     resetMatchUi();
@@ -340,6 +514,28 @@ export default function GamePage() {
   }
 
   if (loading || !user) return <PageLoader />;
+
+  if (matchStatus === "finished" && result) {
+    const me =
+      result.find((p) => p.id === user.id) ??
+      ({
+        id: user.id,
+        name: user.username,
+        score: 0,
+        rating: user.rating?.rating ?? 0,
+      } satisfies GamePlayerResult);
+    const opponent = result.find((p) => p.id !== user.id) ?? null;
+
+    return (
+      <ResultModal
+        me={me}
+        opponent={opponent}
+        onBack={leave}
+        onRematch={findMatch}
+        onNewSprint={leave}
+      />
+    );
+  }
 
   if (matchStatus === "searching" || (matchStatus === "playing" && !game.question)) {
     if (matchStatus === "playing" && !game.question) {

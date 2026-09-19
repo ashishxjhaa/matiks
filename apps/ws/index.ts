@@ -6,10 +6,14 @@ import { generateQuestions } from "./utils";
 
 const wss = new WebSocketServer({ port: 8080 });
 
+const GAME_DURATION_MS = 60_000;
+
 const onlineUsers: Map<string, User> = new Map();
 const games: Map<string, Game> = new Map();
 const currentQuestions: Map<string, number> = new Map();
 const allQuestions: Map<string, Question[]> = new Map();
+const scores: Map<string, number> = new Map();
+const endTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
 
 function progressKey(gameId: string, userId: string) {
   return `g:${gameId}-u:${userId}`;
@@ -17,6 +21,42 @@ function progressKey(gameId: string, userId: string) {
 
 function answersMatch(submitted: number, expected: number) {
   return Math.abs(Number(submitted) - Number(expected)) < 1e-6;
+}
+
+async function finishGame(game: Game) {
+  if (game.status === "OVER") return;
+
+  game.status = "OVER";
+  games.set(game.id, game);
+
+  const timer = endTimers.get(game.id);
+  if (timer) {
+    clearTimeout(timer);
+    endTimers.delete(game.id);
+  }
+
+  const players = await Promise.all(
+    game.members.map(async (mem) => {
+      const ratingRow = await prisma.userRating.findUnique({
+        where: { userId: mem.id },
+      });
+      return {
+        id: mem.id,
+        name: mem.name,
+        score: scores.get(progressKey(game.id, mem.id)) ?? 0,
+        rating: ratingRow?.rating ?? 0,
+      };
+    }),
+  );
+
+  const payload = JSON.stringify({
+    type: "GAME_OVER",
+    payload: { gameId: game.id, players },
+  });
+
+  game.members.forEach((mem) => {
+    if (mem.ws.readyState === WebSocket.OPEN) mem.ws.send(payload);
+  });
 }
 
 type ExtendedWs = WebSocket & { userId: string };
@@ -133,6 +173,7 @@ wss.on("connection", async (ws: ExtendedWs, req) => {
 
       currentGameFetched.members.forEach((mem) => {
         currentQuestions.set(progressKey(currentGameFetched.id, mem.id), 0);
+        scores.set(progressKey(currentGameFetched.id, mem.id), 0);
         mem.ws.send(
           JSON.stringify({
             type: "QUESTION",
@@ -143,6 +184,11 @@ wss.on("connection", async (ws: ExtendedWs, req) => {
           }),
         );
       });
+
+      const timer = setTimeout(() => {
+        void finishGame(currentGameFetched);
+      }, GAME_DURATION_MS);
+      endTimers.set(currentGameFetched.id, timer);
     }
 
     if (parsedData.type === "SUBMIT_ANSWER") {
@@ -164,6 +210,10 @@ wss.on("connection", async (ws: ExtendedWs, req) => {
         return;
       }
 
+      if (existingGame.status !== "RUNNING") {
+        return;
+      }
+
       existingGame.answers.push({
         id: crypto.randomUUID(),
         answer,
@@ -175,6 +225,8 @@ wss.on("connection", async (ws: ExtendedWs, req) => {
       }
 
       const key = progressKey(existingGame.id, ws.userId);
+      scores.set(key, (scores.get(key) ?? 0) + 1);
+
       const currentQuestionIndex = currentQuestions.get(key) ?? 0;
       const storedQuestions =
         allQuestions.get(existingGame.id) ?? existingGame.questions;

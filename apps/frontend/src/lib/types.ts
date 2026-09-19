@@ -24,6 +24,13 @@ export type AuthUser = {
   rating: { rating: number } | null;
 };
 
+export type GamePlayerResult = {
+  id: string;
+  name: string;
+  score: number;
+  rating: number;
+};
+
 export type WsServerMessage =
   | {
       type: "ONLINE_USERS";
@@ -36,6 +43,10 @@ export type WsServerMessage =
   | {
       type: "QUESTION";
       payload: { gameId: string; question: Question };
+    }
+  | {
+      type: "GAME_OVER";
+      payload: { gameId: string; players: GamePlayerResult[] };
     };
 
 export function operationGlyph(op: QuestionOperation): string {
