@@ -4,7 +4,8 @@ import { verify, type JwtPayload } from "jsonwebtoken";
 import type { Game, Question, User } from "./types";
 import { generateQuestions } from "./utils";
 
-const wss = new WebSocketServer({ port: 8080 });
+const WS_PORT = Number(process.env.WS_PORT ?? 8080);
+const wss = new WebSocketServer({ port: WS_PORT, host: "0.0.0.0" });
 
 const GAME_DURATION_MS = 60_000;
 

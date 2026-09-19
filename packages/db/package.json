@@ -8,6 +8,11 @@
     "@types/pg": "^8.23.1",
     "prisma": "7"
   },
+  "scripts": {
+    "prisma:generate": "prisma generate --config prisma7.config.ts",
+    "prisma:migrate": "prisma migrate deploy --config prisma7.config.ts",
+    "build": "prisma generate --config prisma7.config.ts"
+  },
   "exports": {
     "./client": "./index.ts"
   },

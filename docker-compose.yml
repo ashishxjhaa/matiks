@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: matiks
+      POSTGRES_PASSWORD: matiks
+      POSTGRES_DB: matiks
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U matiks -d matiks"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgresql://matiks:matiks@db:5432/matiks
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+    command: >
+      sh -c "cd /app/packages/db && bunx prisma migrate deploy --config prisma7.config.ts
+      && cd /app/apps/backend && bun index.ts"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ws:
+    build:
+      context: .
+      dockerfile: apps/ws/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      WS_PORT: 8080
+      DATABASE_URL: postgresql://matiks:matiks@db:5432/matiks
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+    depends_on:
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      API_ORIGIN: http://backend:4000
+    depends_on:
+      - backend
+      - ws
+
+volumes:
+  pgdata:
