@@ -1,0 +1,13 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 32 32"
+  fill="none"
+  role="img"
+  aria-label="Matiks"
+>
+  <rect width="32" height="32" rx="8" fill="#B1FA63" />
+  <path
+    fill="#050505"
+    d="M8 22.5V9.5h2.85l3.4 7.9 3.4-7.9H20.5V22.5h-2.55v-8.35L14.55 22.5h-1.9l-3.4-8.35V22.5H8Z"
+  />
+</svg>
