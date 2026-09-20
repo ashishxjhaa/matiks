@@ -15,7 +15,7 @@ export function Field({ label, error, className = "", id, ...props }: FieldProps
       </span>
       <input
         id={fieldId}
-        className={`h-11 rounded-[6px] border border-border bg-input px-3.5 text-[14px] text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-accent/60 focus:shadow-[0_0_0_3px_var(--accent-dim)] ${
+        className={`h-11 rounded-control border border-border bg-input px-3.5 text-[14px] text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-accent/60 focus:shadow-[0_0_0_3px_var(--accent-dim)] ${
           error ? "border-danger/50" : ""
         } ${className}`}
         {...props}

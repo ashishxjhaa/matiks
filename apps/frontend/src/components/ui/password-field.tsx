@@ -32,7 +32,7 @@ export function PasswordField({
         <input
           id={fieldId}
           type={visible ? "text" : "password"}
-          className={`h-11 w-full rounded-[6px] border border-border bg-input py-0 pr-12 pl-3.5 text-[14px] text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-accent/60 focus:shadow-[0_0_0_3px_var(--accent-dim)] ${
+          className={`h-11 w-full rounded-control border border-border bg-input py-0 pr-12 pl-3.5 text-[14px] text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-accent/60 focus:shadow-[0_0_0_3px_var(--accent-dim)] ${
             error ? "border-danger/50" : ""
           } ${className}`}
           {...props}

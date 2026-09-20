@@ -172,7 +172,7 @@ export default function LandingPage() {
               reminders. Every session sharpens speed and accuracy.
             </p>
           </div>
-          <div className="rounded-[10px] border border-border bg-surface/50 p-6 md:p-8">
+          <div className="material-card bg-surface/80 p-6 md:p-8">
             <div className="flex items-end justify-between gap-4">
               <div>
                 <p className="text-[11px] tracking-[0.1em] text-muted uppercase">
@@ -218,7 +218,7 @@ export default function LandingPage() {
             {OPERATIONS.map((op) => (
               <li
                 key={op.label}
-                className="flex flex-col items-start gap-3 rounded-[8px] border border-border bg-surface/40 px-5 py-6"
+                className="material-card flex flex-col items-start gap-3 bg-surface/70 px-5 py-6"
               >
                 <span className="font-display text-3xl font-semibold text-accent">
                   {op.glyph}

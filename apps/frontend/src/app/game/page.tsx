@@ -103,7 +103,7 @@ function SearchingView({ onCancel }: { onCancel: () => void }) {
             alt="Matiks"
             width={52}
             height={52}
-            className="relative z-10 h-[52px] w-[52px] rounded-[14px]"
+            className="relative z-10 h-[52px] w-[52px] rounded-control"
             priority
           />
         </div>
@@ -112,7 +112,7 @@ function SearchingView({ onCancel }: { onCancel: () => void }) {
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-lg border border-white/12 bg-[#1c1c1c] px-4 py-2 text-[13px] font-medium text-[#cfcfcf] hover:bg-[#242424]"
+          className="rounded-control border border-white/12 bg-[#1c1c1c] px-4 py-2 text-[13px] font-medium text-[#cfcfcf] hover:bg-[#242424]"
         >
           Cancel Search
         </button>
@@ -241,7 +241,7 @@ function PlayView({
           Type out your answer
         </p>
         <div
-          className={`relative flex h-11 w-[220px] items-center justify-center rounded-xl bg-[#2a2a2a] ${
+          className={`relative flex h-11 w-[220px] items-center justify-center rounded-control bg-[#2a2a2a] ${
             feedback === "wrong"
               ? "animate-shake ring-1 ring-danger"
               : feedback === "correct"
@@ -358,7 +358,7 @@ function ResultModal({
           <FlameMark />
         </div>
 
-        <div className="relative overflow-hidden rounded-[22px] border border-white/[0.07] bg-[#161616] px-5 pt-8 pb-5">
+        <div className="material-card relative overflow-hidden bg-[#161616] px-5 pt-8 pb-5">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 opacity-40"
@@ -374,7 +374,7 @@ function ResultModal({
           <button
             type="button"
             onClick={onBack}
-            className="absolute top-4 left-4 z-10 flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-[#1c1c1c] text-white"
+            className="absolute top-4 left-4 z-10 flex h-8 w-8 items-center justify-center rounded-control border border-white/10 bg-[#1c1c1c] text-white"
             aria-label="Back"
           >
             ‹
@@ -406,7 +406,7 @@ function ResultModal({
                 >
                   {me.score}
                 </p>
-                <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#1c1c1c] px-2.5 py-1.5">
+                <div className="mt-4 flex items-center gap-2 rounded-panel bg-[#1c1c1c] px-2.5 py-1.5">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#2d2d2d] text-[8px] font-bold">
                     {initials(me.name)}
                   </span>
@@ -431,7 +431,7 @@ function ResultModal({
                 >
                   {oppScore}
                 </p>
-                <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#1c1c1c] px-2.5 py-1.5">
+                <div className="mt-4 flex items-center gap-2 rounded-panel bg-[#1c1c1c] px-2.5 py-1.5">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#2d2d2d] text-[8px] font-bold">
                     {initials(opponent?.name ?? "OP")}
                   </span>

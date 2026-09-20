@@ -71,7 +71,7 @@ export default function AuthPage() {
 
         <div
           role="tablist"
-          className="mt-8 flex gap-1 rounded-[8px] bg-surface p-1"
+          className="mt-8 flex gap-1 rounded-panel bg-surface p-1"
         >
           <button
             type="button"
@@ -81,7 +81,7 @@ export default function AuthPage() {
               setMode("login");
               setError(null);
             }}
-            className={`flex-1 rounded-[6px] px-3 py-2.5 text-[13px] font-medium transition-colors ${
+            className={`flex-1 rounded-control px-3 py-2.5 text-[13px] font-medium transition-colors ${
               mode === "login"
                 ? "bg-accent text-black"
                 : "text-muted hover:text-foreground"
@@ -97,7 +97,7 @@ export default function AuthPage() {
               setMode("register");
               setError(null);
             }}
-            className={`flex-1 rounded-[6px] px-3 py-2.5 text-[13px] font-medium transition-colors ${
+            className={`flex-1 rounded-control px-3 py-2.5 text-[13px] font-medium transition-colors ${
               mode === "register"
                 ? "bg-accent text-black"
                 : "text-muted hover:text-foreground"
@@ -132,7 +132,7 @@ export default function AuthPage() {
 
           {error && (
             <p
-              className="rounded-[6px] border border-danger/20 bg-danger/5 px-3 py-2.5 text-[13px] text-danger"
+              className="rounded-control border border-danger/20 bg-danger/5 px-3 py-2.5 text-[13px] text-danger"
               role="alert"
             >
               {error}

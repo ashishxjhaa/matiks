@@ -27,7 +27,7 @@ export function Logo({
         className="h-7 w-7 shrink-0"
       />
       {withWordmark && (
-        <span className="font-display text-[15px] font-semibold tracking-[-0.02em] text-foreground transition-colors group-hover:text-muted-strong">
+        <span className="text-[15px] font-semibold tracking-[-0.022em] text-foreground transition-colors group-hover:text-muted-strong">
           Matiks
         </span>
       )}

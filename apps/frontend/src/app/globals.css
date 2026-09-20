@@ -32,8 +32,13 @@
   --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-danger: var(--danger);
-  --font-sans: var(--font-dm-sans);
-  --font-display: var(--font-syne);
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    var(--font-inter), system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    var(--font-inter), system-ui, sans-serif;
+  --radius-card: 24px;
+  --radius-panel: 20px;
+  --radius-control: 14px;
 }
 
 * {
@@ -45,11 +50,42 @@ html {
 }
 
 body {
+  isolation: isolate;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
-  font-feature-settings: "ss01" on, "cv11" on;
-  letter-spacing: -0.011em;
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01" on, "cv05" on;
+  letter-spacing: -0.022em;
+}
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 0.62;
+  mix-blend-mode: overlay;
+}
+
+.grain-overlay svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.rounded-panel,
+.rounded-control {
+  corner-shape: squircle;
+}
+
+.material-card {
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 a,

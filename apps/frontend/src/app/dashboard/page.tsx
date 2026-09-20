@@ -318,7 +318,7 @@ export default function DashboardPage() {
           </div>
 
           <section className="relative">
-            <div className="relative rounded-[22px] bg-[#1c1c1c] px-6 pt-5 pr-14 pb-5">
+            <div className="material-card relative bg-[#1c1c1c] px-6 pt-5 pr-14 pb-5">
               <span className="absolute -top-3 right-6 z-10 inline-flex items-center gap-1.5 rounded-full bg-[#161616] px-2.5 py-1 text-[12px] font-bold text-[#FF3B3B] shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                   <path d="M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm.75 3.5h-1.5v5.2l3.4 2 0.75-1.28-2.65-1.55V7.5Z" />
@@ -361,7 +361,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     disabled={!cat.active}
-                    className={`relative flex h-[78px] w-full items-center justify-center rounded-[16px] ${
+                    className={`relative flex h-[78px] w-full items-center justify-center rounded-panel ${
                       cat.active
                         ? "border-[3px] border-black bg-[#FFE500]"
                         : "bg-[#1c1c1c]"
@@ -395,7 +395,7 @@ export default function DashboardPage() {
                 findMatch();
                 router.push("/game");
               }}
-              className="relative flex min-h-[188px] flex-col rounded-[18px] bg-[#1c1c1c] p-5 text-left hover:bg-[#202020] disabled:opacity-70"
+              className="material-card relative flex min-h-[188px] flex-col bg-[#1c1c1c] p-5 text-left hover:bg-[#202020] disabled:opacity-70"
             >
               <span className="w-fit rounded-[4px] bg-[#2a2a2a] px-1.5 py-0.5 text-[9px] font-extrabold tracking-wider text-[#F0C93D] uppercase">
                 Math
@@ -411,7 +411,7 @@ export default function DashboardPage() {
               <span className="absolute top-[52%] right-4 text-[#F0C93D]">▸</span>
             </button>
 
-            <div className="relative flex min-h-[188px] flex-col rounded-[18px] bg-[#1c1c1c] p-5">
+            <div className="material-card relative flex min-h-[188px] flex-col bg-[#1c1c1c] p-5">
               <span className="w-fit rounded-[4px] bg-[#2a2a2a] px-1.5 py-0.5 text-[9px] font-extrabold tracking-wider text-[#F0C93D] uppercase">
                 Math
               </span>
@@ -482,7 +482,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center gap-2 rounded-xl bg-[#1c1c1c] px-3 py-2.5">
+            <div className="flex items-center gap-2 rounded-panel bg-[#1c1c1c] px-3 py-2.5">
               <div className="min-w-0 flex-1">
                 <p className="text-[12px] font-medium leading-snug">
                   Play 1 Math · 1v1 Duel
@@ -506,7 +506,7 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 rounded-xl bg-[#1c1c1c] px-3 py-2.5 opacity-50">
+            <div className="flex items-center gap-2 rounded-panel bg-[#1c1c1c] px-3 py-2.5 opacity-50">
               <div className="min-w-0 flex-1">
                 <p className="text-[12px] font-medium leading-snug">
                   Play 1 Math · Sprint Duel
@@ -529,7 +529,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-auto px-4 pt-6 pb-5">
-          <div className="rounded-[20px] bg-[#1a1a1a] px-4 pt-5 pb-4">
+          <div className="material-card bg-[#1a1a1a] px-4 pt-5 pb-4">
             <h2 className="text-center text-[13px] font-extrabold tracking-[0.08em] uppercase">
               Download Mobile App
             </h2>
@@ -537,7 +537,7 @@ export default function DashboardPage() {
               Scan the QR code using your phone
             </p>
             <div className="mt-4 flex items-center gap-3">
-              <div className="flex h-[92px] w-[92px] shrink-0 items-center justify-center rounded-[6px] bg-white p-[6px]">
+              <div className="flex h-[92px] w-[92px] shrink-0 items-center justify-center rounded-control bg-white p-[6px]">
                 <svg viewBox="0 0 29 29" className="h-full w-full" aria-hidden>
                   <rect width="29" height="29" fill="#fff" />
                   <g fill="#111">
@@ -727,7 +727,7 @@ export default function DashboardPage() {
                   href="https://apps.apple.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex h-[42px] items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-[#111] text-[13px] font-semibold hover:bg-[#161616]"
+                  className="flex h-[42px] items-center justify-center gap-2 rounded-control border border-white/[0.08] bg-[#111] text-[13px] font-semibold hover:bg-[#161616]"
                 >
                   <svg width="13" height="15" viewBox="0 0 14 17" fill="currentColor" aria-hidden>
                     <path d="M11.4 9.1c0-2 1.6-3 1.7-3.1-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7s-1.6-.7-2.7-.7c-1.4 0-2.7.8-3.4 2.1-1.5 2.5-.4 6.3 1 8.3.7 1 1.5 2.1 2.6 2 1 0 1.4-.7 2.7-.7s1.6.7 2.7.7 1.8-1 2.5-2c.8-1.1 1.1-2.2 1.1-2.2s-2.1-.8-2.3-3.3ZM9.4 2.8c.6-.7 1-1.7.9-2.8-1 .1-2.1.7-2.7 1.5-.6.7-1.1 1.7-.9 2.7 1.1.1 2.1-.6 2.7-1.4Z" />
@@ -738,7 +738,7 @@ export default function DashboardPage() {
                   href="https://play.google.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex h-[42px] items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-[#111] text-[13px] font-semibold hover:bg-[#161616]"
+                  className="flex h-[42px] items-center justify-center gap-2 rounded-control border border-white/[0.08] bg-[#111] text-[13px] font-semibold hover:bg-[#161616]"
                 >
                   <svg width="13" height="14" viewBox="0 0 14 16" fill="currentColor" aria-hidden>
                     <path d="M.9.7v14.6l8.4-7.3L.9.7Zm9.1 7.9 1.9 1.6-8.7 5 6.8-6.6Zm1.9-3.2-1.9 1.6 6.8 6.6-4.9-8.2ZM2.2.8 11 6.4 9.1 8 2.2.8Z" />
@@ -753,7 +753,7 @@ export default function DashboardPage() {
 
       {matchStatus === "incoming" && (
         <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center p-4 sm:bottom-8 sm:p-0">
-          <div className="animate-toast-in flex w-full max-w-md items-center gap-4 rounded-2xl border border-white/10 bg-[#1c1c1c] px-5 py-4 shadow-2xl">
+          <div className="material-card animate-toast-in flex w-full max-w-md items-center gap-4 bg-[#1c1c1c] px-5 py-4">
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-semibold">Opponent searching</p>
               <p className="mt-0.5 text-[12px] text-[#888]">Join to start the duel</p>
